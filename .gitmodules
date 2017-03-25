@@ -1,0 +1,3 @@
+[submodule "go-github"]
+	path = go-github
+	url = git@github.com:google/go-github.git
