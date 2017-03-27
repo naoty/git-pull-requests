@@ -33,6 +33,7 @@ func (searcher *Searcher) Run() error {
 	queryComponents := make(map[string]string)
 	queryComponents["repo"] = searcher.repo
 	queryComponents["type"] = "pr"
+	queryComponents["is"] = "open"
 
 	buf := []string{}
 	for k, v := range queryComponents {
