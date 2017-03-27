@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
 
 	yaml "gopkg.in/yaml.v2"
 )
@@ -21,7 +23,13 @@ func (cli *CLI) Run(args []string) int {
 		return 1
 	}
 
-	searcher := NewSearcher(token)
+	repo, err := getRepo()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return 1
+	}
+
+	searcher := NewSearcher(repo, token)
 	err = searcher.Run()
 
 	if err != nil {
@@ -30,6 +38,23 @@ func (cli *CLI) Run(args []string) int {
 	}
 
 	return 0
+}
+
+func getRepo() (string, error) {
+	result, err := exec.Command("git", "config", "remote.origin.url").Output()
+
+	if err != nil {
+		return "", err
+	}
+
+	dir, filename := filepath.Split(string(result))
+	ext := filepath.Ext(filename)
+	repo := filename[0 : len(filename)-len(ext)]
+
+	_, user := filepath.Split(dir[0 : len(dir)-1])
+	repository := strings.Join([]string{user, repo}, "/")
+
+	return repository, nil
 }
 
 func readToken() (string, error) {

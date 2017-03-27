@@ -11,12 +11,13 @@ import (
 
 // Searcher searches pull requests.
 type Searcher struct {
+	repo    string
 	ctx     context.Context
 	service *github.SearchService
 }
 
 // NewSearcher generates a new Searcher with a given token.
-func NewSearcher(token string) *Searcher {
+func NewSearcher(repo, token string) *Searcher {
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
@@ -24,13 +25,13 @@ func NewSearcher(token string) *Searcher {
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)
 
-	return &Searcher{ctx: ctx, service: client.Search}
+	return &Searcher{repo: repo, ctx: ctx, service: client.Search}
 }
 
 // Run searches pull requests.
 func (searcher *Searcher) Run() error {
 	queryComponents := make(map[string]string)
-	queryComponents["repo"] = "naoty/Timepiece"
+	queryComponents["repo"] = searcher.repo
 	queryComponents["type"] = "pr"
 
 	buf := []string{}
