@@ -17,9 +17,15 @@ type CLI struct {
 func (cli *CLI) Run(args []string) int {
 	token, err := readToken()
 
-	if err == nil {
-		fmt.Println(token)
-	} else {
+	if err != nil {
+		return 1
+	}
+
+	searcher := NewSearcher(token)
+	err = searcher.Run()
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
 		return 1
 	}
 
