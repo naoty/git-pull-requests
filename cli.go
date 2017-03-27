@@ -30,12 +30,16 @@ func (cli *CLI) Run(args []string) int {
 	}
 
 	searcher := NewSearcher(repo, token)
-	err = searcher.Run()
+	issues, err := searcher.Run()
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		return 1
 	}
+
+	formatter := &Formatter{Issues: issues}
+	result := formatter.Format()
+	fmt.Fprintln(os.Stdout, result)
 
 	return 0
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/google/go-github/github"
@@ -30,7 +29,7 @@ func NewSearcher(repo, token string) *Searcher {
 }
 
 // Run searches pull requests.
-func (searcher *Searcher) Run() error {
+func (searcher *Searcher) Run() ([]github.Issue, error) {
 	queryComponents := make(map[string]string)
 	queryComponents["repo"] = searcher.repo
 	queryComponents["type"] = "pr"
@@ -45,10 +44,5 @@ func (searcher *Searcher) Run() error {
 	query := strings.Join(buf, " ")
 	result, _, err := searcher.service.Issues(searcher.ctx, query, nil)
 
-	for _, issue := range result.Issues {
-		username := issue.User.GetLogin()
-		fmt.Printf("#%d %v %v\n", issue.GetNumber(), username, issue.GetTitle())
-	}
-
-	return err
+	return result.Issues, err
 }
