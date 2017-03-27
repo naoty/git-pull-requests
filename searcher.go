@@ -3,8 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
-	"go-github/github"
 	"strings"
+
+	"github.com/google/go-github/github"
 
 	"golang.org/x/oauth2"
 )
