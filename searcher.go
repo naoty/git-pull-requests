@@ -45,7 +45,8 @@ func (searcher *Searcher) Run() error {
 	result, _, err := searcher.service.Issues(searcher.ctx, query, nil)
 
 	for _, issue := range result.Issues {
-		fmt.Printf("%v\n", issue.GetTitle())
+		username := issue.User.GetLogin()
+		fmt.Printf("#%d %v %v\n", issue.GetNumber(), username, issue.GetTitle())
 	}
 
 	return err
